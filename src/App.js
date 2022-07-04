@@ -8,36 +8,21 @@ function App() {
           <label htmlFor="email" className="form-label">
             Email address
           </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className="form-control"
-          />
+          <input type="email" id="email" name="email" className="form-control" />
         </div>
 
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password
           </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className="form-control"
-          />
+          <input type="password" id="password" name="password" className="form-control" />
         </div>
 
         <div className="mb-3">
           <label htmlFor="confirm-password" className="form-label">
             Confirm Password
           </label>
-          <input
-            type="password"
-            id="confirm-password"
-            name="confirm-password"
-            className="form-control"
-          />
+          <input type="password" id="confirm-password" name="confirm-password" className="form-control" />
         </div>
       </form>
     </div>
