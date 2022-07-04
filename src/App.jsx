@@ -1,3 +1,4 @@
+import React from "react";
 import "./App.css";
 
 function App() {
@@ -7,22 +8,22 @@ function App() {
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email address
+            <input type="email" id="email" name="email" className="form-control" />
           </label>
-          <input type="email" id="email" name="email" className="form-control" />
         </div>
 
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password
+            <input type="password" id="password" name="password" className="form-control" />
           </label>
-          <input type="password" id="password" name="password" className="form-control" />
         </div>
 
         <div className="mb-3">
           <label htmlFor="confirm-password" className="form-label">
             Confirm Password
+            <input type="password" id="confirm-password" name="confirm-password" className="form-control" />
           </label>
-          <input type="password" id="confirm-password" name="confirm-password" className="form-control" />
         </div>
       </form>
     </div>

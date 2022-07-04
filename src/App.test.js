@@ -21,27 +21,39 @@ describe("App", () => {
 });
 
 describe("testing input", () => {
-
   it("is able to type email", () => {
     render(<App />);
     const emailInputElement = screen.getByRole("textbox", {
       name: /email/i,
     });
-    userEvent.type(emailInputElement, "jm.pagan@gmail.com");
-    expect(emailInputElement.value).toBe("jm.pagan@gmail.com");
+    userEvent.type(emailInputElement, "juandoe@gmail.com");
+    expect(emailInputElement.value).toBe("juandoe@gmail.com");
   });
 
   it("is able to type at password", () => {
     render(<App />);
     const passwordInputElement = screen.getByLabelText(/^password$/i);
-    userEvent.type(passwordInputElement, "jm.pagan@gmail.com");
-    expect(passwordInputElement.value).toBe("jm.pagan@gmail.com");
+    userEvent.type(passwordInputElement, "ilovedonaldtrump");
+    expect(passwordInputElement.value).toBe("ilovedonaldtrump");
   });
 
   it("is able to type at the confirm password", () => {
     render(<App />);
     const confirmPaswordInputElement = screen.getByLabelText(/confirm password/i);
-    userEvent.type(confirmPaswordInputElement, "jm.pagan@gmail.com");
-    expect(confirmPaswordInputElement.value).toBe("jm.pagan@gmail.com");
+    userEvent.type(confirmPaswordInputElement, "ilovedonaldtrump");
+    expect(confirmPaswordInputElement.value).toBe("ilovedonaldtrump");
+  });
+});
+
+describe("validation", () => {
+  it("Show email error upon typing invalid email", () => {
+    render(<App />);
+    const emailErrorElement = screen.getByText(/(?=.*email)(?=.*invalid)/i);
+    expect(emailErrorElement).not.toBeInTheDocument();
+    const emailInputElement = screen.getByRole("textbox", {
+      name: /email/i,
+    });
+    userEvent.type(emailInputElement, "juandoegmail.com");
+    expect(emailErrorElement).toBeInTheDocument();
   });
 });
