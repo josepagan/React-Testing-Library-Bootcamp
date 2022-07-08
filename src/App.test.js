@@ -10,7 +10,6 @@ describe("App", () => {
   });
   it("all input elemts are empty", () => {
     render(<App />);
-    // const emailInputElement = screen.getByRole("textbox")dd
     const emailInputElement = screen.getByRole("textbox", { name: /email/i });
     expect(emailInputElement.value).toBe("");
     //needs regex anchors otherwise it would select "Confirm Password" too
@@ -52,14 +51,20 @@ test("testing email validation function works", ()=>{
 })
 
 describe("validation", () => {
+  it("does not show error before typing invalid email", () => {
+    render(<App/>)
+    const emailErrorElement = screen.queryByText(/valid/i);
+    expect(emailErrorElement).not.toBeInTheDocument();
+  })
   it("Show email error upon typing invalid email", () => {
     render(<App />);
-    const emailErrorElement = screen.getByText(/(?=.*email)(?=.*invalid)/i);
-    expect(emailErrorElement).not.toBeInTheDocument();
     const emailInputElement = screen.getByRole("textbox", {
-      name: /email/i,
+      name: /email/i
     });
+    const submitButtonElement = screen.getByRole("button", {name: /submit/i})
     userEvent.type(emailInputElement, "juandoegmail.com");
+    userEvent.click(submitButtonElement)
+    const emailErrorElement = screen.queryByText(/valid/i);
     expect(emailErrorElement).toBeInTheDocument();
   });
 });
