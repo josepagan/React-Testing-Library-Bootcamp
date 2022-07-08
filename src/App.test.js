@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
+import { isValidEmail } from "./isValidEmail"
 
 describe("App", () => {
   it("renders App component", () => {
@@ -44,6 +45,11 @@ describe("testing input", () => {
     expect(confirmPaswordInputElement.value).toBe("ilovedonaldtrump");
   });
 });
+
+test("testing email validation function works", ()=>{
+    expect(isValidEmail("not_valid^gmail.com")).toBe(false)
+    expect(isValidEmail("juandoe@gmail.com")).toBe(true)
+})
 
 describe("validation", () => {
   it("Show email error upon typing invalid email", () => {

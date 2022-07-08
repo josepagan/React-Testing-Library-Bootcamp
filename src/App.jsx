@@ -1,14 +1,22 @@
-import React, { useState }from "react";
+import React, { useState } from "react";
 import "./App.css";
+import { isValidEmail } from './isValidEmail'
+
 
 function App() {
+  const [state, setState] = useState({ email: "", password: "", confirmPassword: "" });
+    const [invalidEmailFlag, setInvalidEmailFlag] = useState(false)
   const handleChange = (e) => {
-    console.log("fuck eslint now with double quotes", e.target);
+      setState({...state,[e.target.name]:e.target.value })
   };
-    const [state, setState] = useState({email:"",password:"", confirmPassword:""})
+    const handleSubmit = (e) => {
+        e.pregentDefault()
+        if (!isValidEmail(state.email)) console.log("OMG IT IS NOT VALID")
+        
+    }
   return (
     <div className="container my-5">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email address
