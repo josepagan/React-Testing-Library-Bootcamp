@@ -8,14 +8,16 @@ function App() {
     password: "",
     confirmPassword: "",
   });
-  const [invalidEmailFlag, setInvalidEmailFlag] = useState(false);
+  const [error, setError] = useState("");
 	
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isValidEmail(state.email)) setInvalidEmailFlag(true)
+    if (!isValidEmail(state.email)) return setError("The email is not valid")
+    // if (!isValidPassword(state.password))
+    // COMPLETE THE TESTS FIRST TO DO PROPER TDD MATE!!!!
   };
 
   return (
@@ -25,17 +27,19 @@ function App() {
           <label htmlFor="email" className="form-label">
             Email address
             <input
+              // im not actually using the value attribute, i wonder if thats ok 
               type="email"
               id="email"
               name="email"
               className="form-control"
               onChange={handleChange}
+              value={state.email}
             />
           </label>
         </div>
 
         <div className="mb-3">
-          {invalidEmailFlag && <div>The email is not valid</div> }
+          {error && <div>{error}</div> }
         </div>
         
         <div className="mb-3">
@@ -47,6 +51,7 @@ function App() {
               name="password"
               className="form-control"
               onChange={handleChange}
+              value={state.password}
             />
           </label>
         </div>
@@ -59,8 +64,9 @@ function App() {
             <input
               type="password"
               id="confirm-password"
-              name="confirm-password"
+              name="confirmPassword"
               className="form-control"
+              value={state.confirmPassword}
               onChange={handleChange}
             />
           </label>
