@@ -27,7 +27,6 @@ function App() {
           <label htmlFor="email" className="form-label">
             Email address
             <input
-              // im not actually using the value attribute, i wonder if thats ok 
               type="email"
               id="email"
               name="email"
@@ -41,7 +40,6 @@ function App() {
         <div className="mb-3">
           {error && <div>{error}</div> }
         </div>
-        
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password

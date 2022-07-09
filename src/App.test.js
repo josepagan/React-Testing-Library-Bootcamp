@@ -73,9 +73,41 @@ describe("email validation", () => {
 
 describe("password validation", () => {
   it("does not try to validate password if the email is not valid", () => {
-    return null;
+    
+    render(<App />);
+
+    const emailInputElement = screen.getByRole("textbox", {
+      name: /email/i,
+    });
+    const submitButtonElement = screen.getByRole("button", { name: /submit/i });
+    const passwordInputElement = screen.getByLabelText(/^password$/i);
+    const shortPasswordError = screen.queryByText(/short/i);
+
+    userEvent.type(emailInputElement, "juandoegmail.com");
+    userEvent.type(passwordInputElement, "1234");
+    userEvent.click(submitButtonElement);
+
+    expect(shortPasswordError).not.toBeInTheDocument()
+    // screen.debug()
   });
+
   it("does return error if the password is less than 5 characters", () => {
-    return null;
+    
+    render(<App />);
+
+    const emailInputElement = screen.getByRole("textbox", {
+      name: /email/i,
+    });
+    const submitButtonElement = screen.getByRole("button", { name: /submit/i });
+    const passwordInputElement = screen.getByLabelText(/^password$/i);
+    const shortPasswordError = screen.queryByText(/short/i);
+
+    userEvent.type(emailInputElement, "good@email.com");
+    userEvent.type(passwordInputElement, "1234");
+    userEvent.click(submitButtonElement);
+
+    expect(shortPasswordError).toBeInTheDocument()
+    // screen.debug()
+  
   });
 });
