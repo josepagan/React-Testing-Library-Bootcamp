@@ -73,7 +73,7 @@ describe("email validation", () => {
 
 describe("password validation", () => {
   it("does not try to validate password if the email is not valid", () => {
-    
+
     render(<App />);
 
     const emailInputElement = screen.getByRole("textbox", {
@@ -91,8 +91,8 @@ describe("password validation", () => {
     // screen.debug()
   });
 
-  it("does return error if the password is less than 5 characters", () => {
-    
+  it(`does return error if the password is less than 5 characters`, () => {
+
     render(<App />);
 
     const emailInputElement = screen.getByRole("textbox", {
@@ -109,6 +109,41 @@ describe("password validation", () => {
 
     expect(shortPasswordError).toBeInTheDocument()
     // screen.debug()
-  
+
   });
+  it(`does return password not matching error but only if
+ the email is valid`, ()=>{
+   render(<App/>)
+   const emailInputElement = screen.getByRole("textbox", {
+     name: /email/i,
+   });
+   const submitButtonElement = screen.getByRole("button", { name: /submit/i });
+   const passwordInputElement = screen.getByLabelText(/^password$/i);
+   const confirmPaswordInputElement= screen.getByLabelText(/^confirm password$/i);
+
+
+    userEvent.type(emailInputElement, "bademail.com");
+    userEvent.type(passwordInputElement, "1234");
+    userEvent.type(confirmPaswordInputElement, "1234");
+    userEvent.click(submitButtonElement);
+
+   const emailErrorElement = screen.queryByText(/valid/i);
+   const shortPasswordError = screen.queryByText(/short/i);
+   let paswordsNotMatchElement = screen.queryByText(/match/i);
+
+
+   expect(paswordsNotMatchElement).not.toBeInTheDocument()
+
+    userEvent.type(emailInputElement, "good@email.com");
+    userEvent.type(passwordInputElement, "1234");
+    userEvent.type(confirmPaswordInputElement, "9999");
+    userEvent.click(submitButtonElement);
+   
+   // const paswordsNotMatchElement2 = screen.queryByText(/match/i);
+   paswordsNotMatchElement = screen.queryByText(/match/i);
+
+   expect(paswordsNotMatchElement).toBeInTheDocument()
+
+ })
+
 });
