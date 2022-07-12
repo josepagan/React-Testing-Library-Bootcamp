@@ -4,6 +4,24 @@ import userEvent from "@testing-library/user-event";
 import App from "./App";
 import { isValidEmail } from "./isValidEmail";
 
+//TODO create heper funtion typeIntoform which accepts email, password and
+//confirm password as an argument
+//
+//
+
+const typeIntoForm = (email="", password="", confirmPasword="") => {
+  const emailInputElement = screen.getByRole("textbox", { name: /email/i });
+  const passwordInputElement = screen.getByLabelText(/^password$/i);
+  const confirmPaswordInputElement =
+    screen.getByLabelText(/confirm password/i);
+
+  userEvent.type(emailInputElement, email);
+  userEvent.type(passwordInputElement, password);
+  userEvent.type(confirmPaswordInputElement, confirmPasword);
+
+  //TODO maybe should I put also the submit button???
+}
+
 describe("App", () => {
   it("renders App component", () => {
     render(<App />);
@@ -73,7 +91,6 @@ describe("email validation", () => {
 
 describe("password validation", () => {
   it("does not try to validate password if the email is not valid", () => {
-
     render(<App />);
 
     const emailInputElement = screen.getByRole("textbox", {
@@ -122,10 +139,10 @@ describe("password validation", () => {
    const confirmPaswordInputElement= screen.getByLabelText(/^confirm password$/i);
 
 
-    userEvent.type(emailInputElement, "bademail.com");
-    userEvent.type(passwordInputElement, "1234");
-    userEvent.type(confirmPaswordInputElement, "1234");
-    userEvent.click(submitButtonElement);
+   userEvent.type(emailInputElement, "bademail.com");
+   userEvent.type(passwordInputElement, "1234");
+   userEvent.type(confirmPaswordInputElement, "1234");
+   userEvent.click(submitButtonElement);
 
    const emailErrorElement = screen.queryByText(/valid/i);
    const shortPasswordError = screen.queryByText(/short/i);
@@ -134,11 +151,11 @@ describe("password validation", () => {
 
    expect(paswordsNotMatchElement).not.toBeInTheDocument()
 
-    userEvent.type(emailInputElement, "good@email.com");
-    userEvent.type(passwordInputElement, "1234");
-    userEvent.type(confirmPaswordInputElement, "9999");
-    userEvent.click(submitButtonElement);
-   
+   userEvent.type(emailInputElement, "good@email.com");
+   userEvent.type(passwordInputElement, "1234");
+   userEvent.type(confirmPaswordInputElement, "9999");
+   userEvent.click(submitButtonElement);
+
    // const paswordsNotMatchElement2 = screen.queryByText(/match/i);
    paswordsNotMatchElement = screen.queryByText(/match/i);
 
