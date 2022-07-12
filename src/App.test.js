@@ -100,11 +100,12 @@ describe("password validation", () => {
     });
     const submitButtonElement = screen.getByRole("button", { name: /submit/i });
     const passwordInputElement = screen.getByLabelText(/^password$/i);
-    const shortPasswordError = screen.queryByText(/short/i);
 
     userEvent.type(emailInputElement, "good@email.com");
     userEvent.type(passwordInputElement, "1234");
     userEvent.click(submitButtonElement);
+
+    const shortPasswordError = screen.queryByText(/short/i);
 
     expect(shortPasswordError).toBeInTheDocument()
     // screen.debug()

@@ -16,8 +16,7 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!isValidEmail(state.email)) return setError("The email is not valid")
-    // if (!isValidPassword(state.password))
-    // COMPLETE THE TESTS FIRST TO DO PROPER TDD MATE!!!!
+    if (state.password.length < 5) return setError("The email is too short")
   };
 
   return (
