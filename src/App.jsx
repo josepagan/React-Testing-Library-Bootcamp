@@ -19,6 +19,7 @@ function App() {
     if (state.password.length < 5) return setError("The email is too short")
     if (state.password !== state.confirmPassword) return setError(`The
     passwords does not match`)
+    else return
   };
 
   return (

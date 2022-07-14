@@ -9,58 +9,66 @@ import { isValidEmail } from "./isValidEmail";
 //
 //
 
-const typeIntoForm = (email="", password="", confirmPasword="") => {
+const typeIntoForm = ({ email, password , confirmPasword }) => {
   const emailInputElement = screen.getByRole("textbox", { name: /email/i });
   const passwordInputElement = screen.getByLabelText(/^password$/i);
   const confirmPaswordInputElement =
     screen.getByLabelText(/confirm password/i);
 
-  userEvent.type(emailInputElement, email);
-  userEvent.type(passwordInputElement, password);
-  userEvent.type(confirmPaswordInputElement, confirmPasword);
+  email && userEvent.type(emailInputElement, email);
+  password && userEvent.type(passwordInputElement, password);
+  confirmPasword && userEvent.type(confirmPaswordInputElement, confirmPasword);
 
-  //TODO maybe should I put also the submit button???
+  return {
+    emailInputElement,
+    passwordInputElement,
+    confirmPaswordInputElement
+  }
+
 }
+
+
 
 describe("App", () => {
   it("renders App component", () => {
     render(<App />);
   });
-  it("all input elemts are empty", () => {
-    render(<App />);
-    const emailInputElement = screen.getByRole("textbox", { name: /email/i });
-    expect(emailInputElement.value).toBe("");
-    //needs regex anchors otherwise it would select "Confirm Password" too
-    const passwordInputElement = screen.getByLabelText(/^password$/i);
-    expect(passwordInputElement.value).toBe("");
-    const confirmPaswordInputElement =
-      screen.getByLabelText(/confirm password/i);
-    expect(confirmPaswordInputElement.value).toBe("");
-  });
+  it(`form fields should be empty`, ()=>{
+    render(<App/>)
+
+    const {
+      emailInputElement,
+      passwordInputElement,
+      confirmPaswordInputElement} = typeIntoForm({})
+
+    expect(emailInputElement.value).toBe("")
+    expect(passwordInputElement.value).toBe("")
+    expect(confirmPaswordInputElement.value).toBe("")
+  }) 
 });
 
 describe("testing input", () => {
   it("is able to type email", () => {
     render(<App />);
-    const emailInputElement = screen.getByRole("textbox", {
-      name: /email/i,
-    });
-    userEvent.type(emailInputElement, "juandoe@gmail.com");
+
+    const {emailInputElement} = typeIntoForm({email: "juandoe@gmail.com"})
+
     expect(emailInputElement.value).toBe("juandoe@gmail.com");
   });
 
   it("is able to type at password", () => {
     render(<App />);
-    const passwordInputElement = screen.getByLabelText(/^password$/i);
-    userEvent.type(passwordInputElement, "ilovedonaldtrump");
+
+    const { passwordInputElement } = typeIntoForm({password: "ilovedonaldtrump"})
+
     expect(passwordInputElement.value).toBe("ilovedonaldtrump");
   });
 
   it("is able to type at the confirm password", () => {
     render(<App />);
-    const confirmPaswordInputElement =
-      screen.getByLabelText(/confirm password/i);
-    userEvent.type(confirmPaswordInputElement, "ilovedonaldtrump");
+
+    const { confirmPaswordInputElement } = typeIntoForm({ confirmPasword:"ilovedonaldtrump" })
+      
     expect(confirmPaswordInputElement.value).toBe("ilovedonaldtrump");
   });
 });
@@ -76,14 +84,17 @@ describe("email validation", () => {
     const emailErrorElement = screen.queryByText(/valid/i);
     expect(emailErrorElement).not.toBeInTheDocument();
   });
-  it("Show email error upon typing invalid email", () => {
+  it("Show email error upon submitting invalid email", () => {
     render(<App />);
-    const emailInputElement = screen.getByRole("textbox", {
-      name: /email/i,
-    });
+
+    const {
+      emailInputElement,
+      passwordInputElement,
+    confirmPaswordInputElement} = typeIntoForm({email:"juandoe^email.com"})
+
     const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-    userEvent.type(emailInputElement, "juandoegmail.com");
     userEvent.click(submitButtonElement);
+
     const emailErrorElement = screen.queryByText(/valid/i);
     expect(emailErrorElement).toBeInTheDocument();
   });
@@ -93,15 +104,17 @@ describe("password validation", () => {
   it("does not try to validate password if the email is not valid", () => {
     render(<App />);
 
-    const emailInputElement = screen.getByRole("textbox", {
-      name: /email/i,
-    });
+
+    const {emailInputElement,passwordInputElement} = typeIntoForm({
+      email: "bad^email.com",
+      password: "1234"
+    })
+
+
+
     const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-    const passwordInputElement = screen.getByLabelText(/^password$/i);
     const shortPasswordError = screen.queryByText(/short/i);
 
-    userEvent.type(emailInputElement, "juandoegmail.com");
-    userEvent.type(passwordInputElement, "1234");
     userEvent.click(submitButtonElement);
 
     expect(shortPasswordError).not.toBeInTheDocument()
@@ -112,14 +125,10 @@ describe("password validation", () => {
 
     render(<App />);
 
-    const emailInputElement = screen.getByRole("textbox", {
-      name: /email/i,
-    });
+    const {emailInputElement, passwordInputElement} = typeIntoForm({
+      email:"good@email.com", password:"1234"
+    })
     const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-    const passwordInputElement = screen.getByLabelText(/^password$/i);
-
-    userEvent.type(emailInputElement, "good@email.com");
-    userEvent.type(passwordInputElement, "1234");
     userEvent.click(submitButtonElement);
 
     const shortPasswordError = screen.queryByText(/short/i);
@@ -131,17 +140,15 @@ describe("password validation", () => {
   it(`does return password not matching error but only if
  the email is valid`, ()=>{
    render(<App/>)
-   const emailInputElement = screen.getByRole("textbox", {
-     name: /email/i,
-   });
+
+   const {
+     emailInputElement,
+     passwordInputElement,
+     confirmPaswordInputElement } = typeIntoForm({
+       email:"bademail", password:"bad",confirmPasword:"bad"
+     })
+
    const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-   const passwordInputElement = screen.getByLabelText(/^password$/i);
-   const confirmPaswordInputElement= screen.getByLabelText(/^confirm password$/i);
-
-
-   userEvent.type(emailInputElement, "bademail.com");
-   userEvent.type(passwordInputElement, "1234");
-   userEvent.type(confirmPaswordInputElement, "1234");
    userEvent.click(submitButtonElement);
 
    const emailErrorElement = screen.queryByText(/valid/i);
