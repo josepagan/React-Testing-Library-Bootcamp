@@ -24,7 +24,7 @@ const typeIntoForm = ({ email, password , confirmPasword }) => {
 
 }
 
-const findErrors = () => {
+const getErrors = () => {
   const email = screen.queryByText(/valid/i);
   const shortPassword = screen.queryByText(/short/i);
   const passwordNotMatch = screen.queryByText(/match/i);
@@ -128,7 +128,7 @@ describe("password validation", () => {
     })
     submitForm()
 
-    expect(findErrors().shortPassword).toBeInTheDocument()
+    expect(getErrors().shortPassword).toBeInTheDocument()
 
   });
   it(`does return password not matching error but only if
@@ -143,18 +143,13 @@ describe("password validation", () => {
      })
    submitForm()
 
-   const emailErrorElement = screen.queryByText(/valid/i);
-   const shortPasswordError = screen.queryByText(/short/i);
-   let paswordsNotMatchElement = screen.queryByText(/match/i);
-
-
-   expect(findErrors().passwordNotMatch).not.toBeInTheDocument()
+   expect(getErrors().passwordNotMatch).not.toBeInTheDocument()
 
    userEvent.type(emailInputElement, "good@email.com");
    userEvent.type(passwordInputElement, "1234");
    userEvent.type(confirmPaswordInputElement, "9999");
    submitForm()
 
-   expect(findErrors().passwordNotMatch).toBeInTheDocument()
+   expect(getErrors().passwordNotMatch).toBeInTheDocument()
  })
 });
