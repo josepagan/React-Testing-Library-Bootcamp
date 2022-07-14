@@ -4,10 +4,7 @@ import userEvent from "@testing-library/user-event";
 import App from "./App";
 import { isValidEmail } from "./isValidEmail";
 
-//TODO create heper funtion typeIntoform which accepts email, password and
-//confirm password as an argument
-//
-//
+// HELPER FUNCTIONS
 
 const typeIntoForm = ({ email, password , confirmPasword }) => {
   const emailInputElement = screen.getByRole("textbox", { name: /email/i });
@@ -27,6 +24,16 @@ const typeIntoForm = ({ email, password , confirmPasword }) => {
 
 }
 
+const findErrors = () => {
+  const email = screen.queryByText(/valid/i);
+  const shortPassword = screen.queryByText(/short/i);
+  const passwordNotMatch = screen.queryByText(/match/i);
+  return {email, shortPassword, passwordNotMatch}
+}
+const submitForm = () => {
+  const submitButtonElement = screen.getByRole("button", { name: /submit/i });
+  userEvent.click(submitButtonElement);
+}
 
 
 describe("App", () => {
@@ -52,7 +59,6 @@ describe("testing input", () => {
     render(<App />);
 
     const {emailInputElement} = typeIntoForm({email: "juandoe@gmail.com"})
-
     expect(emailInputElement.value).toBe("juandoe@gmail.com");
   });
 
@@ -60,7 +66,6 @@ describe("testing input", () => {
     render(<App />);
 
     const { passwordInputElement } = typeIntoForm({password: "ilovedonaldtrump"})
-
     expect(passwordInputElement.value).toBe("ilovedonaldtrump");
   });
 
@@ -68,7 +73,6 @@ describe("testing input", () => {
     render(<App />);
 
     const { confirmPaswordInputElement } = typeIntoForm({ confirmPasword:"ilovedonaldtrump" })
-      
     expect(confirmPaswordInputElement.value).toBe("ilovedonaldtrump");
   });
 });
@@ -78,22 +82,22 @@ test("testing email validation function works", () => {
   expect(isValidEmail("juandoe@gmail.com")).toBe(true);
 });
 
-describe("email validation", () => {
+describe("email validation upon submitting", () => {
+
   it("does not show error before typing invalid email", () => {
     render(<App />);
     const emailErrorElement = screen.queryByText(/valid/i);
     expect(emailErrorElement).not.toBeInTheDocument();
   });
+
   it("Show email error upon submitting invalid email", () => {
     render(<App />);
 
     const {
       emailInputElement,
       passwordInputElement,
-    confirmPaswordInputElement} = typeIntoForm({email:"juandoe^email.com"})
-
-    const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-    userEvent.click(submitButtonElement);
+      confirmPaswordInputElement} = typeIntoForm({email:"juandoe^email.com"})
+    submitForm()
 
     const emailErrorElement = screen.queryByText(/valid/i);
     expect(emailErrorElement).toBeInTheDocument();
@@ -109,16 +113,10 @@ describe("password validation", () => {
       email: "bad^email.com",
       password: "1234"
     })
+    submitForm()
 
-
-
-    const submitButtonElement = screen.getByRole("button", { name: /submit/i });
     const shortPasswordError = screen.queryByText(/short/i);
-
-    userEvent.click(submitButtonElement);
-
     expect(shortPasswordError).not.toBeInTheDocument()
-    // screen.debug()
   });
 
   it(`does return error if the password is less than 5 characters`, () => {
@@ -128,13 +126,9 @@ describe("password validation", () => {
     const {emailInputElement, passwordInputElement} = typeIntoForm({
       email:"good@email.com", password:"1234"
     })
-    const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-    userEvent.click(submitButtonElement);
+    submitForm()
 
-    const shortPasswordError = screen.queryByText(/short/i);
-
-    expect(shortPasswordError).toBeInTheDocument()
-    // screen.debug()
+    expect(findErrors().shortPassword).toBeInTheDocument()
 
   });
   it(`does return password not matching error but only if
@@ -147,27 +141,20 @@ describe("password validation", () => {
      confirmPaswordInputElement } = typeIntoForm({
        email:"bademail", password:"bad",confirmPasword:"bad"
      })
-
-   const submitButtonElement = screen.getByRole("button", { name: /submit/i });
-   userEvent.click(submitButtonElement);
+   submitForm()
 
    const emailErrorElement = screen.queryByText(/valid/i);
    const shortPasswordError = screen.queryByText(/short/i);
    let paswordsNotMatchElement = screen.queryByText(/match/i);
 
 
-   expect(paswordsNotMatchElement).not.toBeInTheDocument()
+   expect(findErrors().passwordNotMatch).not.toBeInTheDocument()
 
    userEvent.type(emailInputElement, "good@email.com");
    userEvent.type(passwordInputElement, "1234");
    userEvent.type(confirmPaswordInputElement, "9999");
-   userEvent.click(submitButtonElement);
+   submitForm()
 
-   // const paswordsNotMatchElement2 = screen.queryByText(/match/i);
-   paswordsNotMatchElement = screen.queryByText(/match/i);
-
-   expect(paswordsNotMatchElement).toBeInTheDocument()
-
+   expect(findErrors().passwordNotMatch).toBeInTheDocument()
  })
-
 });
